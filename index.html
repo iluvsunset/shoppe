@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shopee Affiliate Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 14px;
+      padding: 28px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.5);
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      font-size: 14px;
+      opacity: .8;
+      margin-bottom: 18px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: #22c55e;
+      color: #052e16;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: .9;
+    }
+
+    .result {
+      margin-top: 16px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      padding: 10px;
+      border-radius: 10px;
+      word-break: break-all;
+      display: none;
+    }
+
+    .copy {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #22c55e;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 12px;
+      opacity: .5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>☕ Shopee Affiliate</h1>
+    <p>Paste Shopee link → generate affiliate link</p>
+
+    <input
+      id="input"
+      placeholder="https://shopee.vn/..."
+      autocomplete="off"
+    />
+
+    <button onclick="generate()">Generate Link</button>
+
+    <div class="result" id="result">
+      <div id="output"></div>
+      <div class="copy" onclick="copy()">📋 Copy link</div>
+    </div>
+
+    <footer>
+      Affiliate disclosure: I may earn commission
+    </footer>
+  </div>
+
+  <script>
+    // 🔴 CHANGE THIS TO YOUR REAL BACKEND URL
+    const API_URL = "https://shoppe-rvi7.onrender.com";
+
+    function generate() {
+      const input = document.getElementById("input").value.trim();
+
+      if (!input) {
+        alert("Paste a Shopee link");
+        return;
+      }
+
+      fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shopeeUrl: input })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        document.getElementById("output").innerText =
+          data.affiliateLink;
+
+        document.getElementById("result").style.display = "block";
+      })
+      .catch(() => alert("Backend not reachable"));
+    }
+
+    function copy() {
+      const text = document.getElementById("output").innerText;
+      navigator.clipboard.writeText(text);
+      alert("Copied!");
+    }
+  </script>
+
+</body>
+</html>
